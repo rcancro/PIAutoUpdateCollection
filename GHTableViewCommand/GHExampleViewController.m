@@ -13,6 +13,8 @@ static const NSString *kSectionTitleKey = @"section title";
 static const NSString *kRowDataKey = @"data";
 static NSString *kDefaultCellIdentifier = @"cell";
 
+typedef void (^TableModelChangeBlock)();
+
 @interface GHExampleViewController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) NSMutableArray *tableData;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *actionBarButton;
@@ -84,9 +86,35 @@ static NSString *kDefaultCellIdentifier = @"cell";
     [self.tableView reloadData];
 }
 
-- (void)deleteSelectedRowsAction:(id)sender
+- (void)tableUpdateAction:(TableModelChangeBlock)modelChangeBlock
 {
+    // Create the sectionDataObject needed to update the table
+    GHTableCommandSectionIndexData *sectionIndexData = [[GHTableCommandSectionIndexData alloc] init];
     
+    // set the current sections as the "oldSections"
+    sectionIndexData.outdatedSections = [self nonEmptySections];
+    
+    GHTableCommandAllSectionData *allSectionData = [[GHTableCommandAllSectionData alloc] init];
+    for (NSDictionary *sectionData in self.tableData)
+    {
+        [allSectionData addOutdatedData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
+    }
+    
+    modelChangeBlock();
+    
+    // now get the updated non empty sections and set them in the updatedSections
+    sectionIndexData.updatedSections = [self nonEmptySections];
+    
+    for (NSDictionary *sectionData in self.tableData)
+    {
+        NSArray *rowData = sectionData[kRowDataKey];
+        if ([rowData count] > 0)
+        {
+            [allSectionData addUpdatedData:rowData forSection:sectionData[kSectionTitleKey]];
+        }
+    }
+    
+    [self.tableView updateWithSectionIndexData:sectionIndexData sectionData:allSectionData withRowAnimation:UITableViewRowAnimationAutomatic callback:nil];
 }
 
 - (NSArray *)nonEmptySections
@@ -102,51 +130,90 @@ static NSString *kDefaultCellIdentifier = @"cell";
     return sections;
 }
 
+- (void)deleteSelectedRowsAction:(id)sender
+{
+    TableModelChangeBlock deleteSelectedBlock = ^{
+        NSMutableArray *sortedIndexPaths = [NSMutableArray arrayWithArray:[self.selectedRows allObjects]];
+        
+        // we want to remove higher indexes first so we don't have to try to update indexes after a delete
+        [sortedIndexPaths sortUsingComparator:^NSComparisonResult(NSIndexPath *obj1, NSIndexPath *obj2)
+         {
+             NSComparisonResult result = NSOrderedSame;
+             if (obj1.section > obj2.section)
+             {
+                 result = NSOrderedAscending;
+             }
+             else if (obj1.section < obj2.section)
+             {
+                 result = NSOrderedDescending;
+             }
+             else
+             {
+                 // ok we have the same section
+                 if (obj1.row > obj2.row)
+                 {
+                     result =  NSOrderedAscending;
+                 }
+                 else if (obj1.row < obj2.row)
+                 {
+                     result = NSOrderedDescending;
+                 }
+             }
+             return result;
+         }];
+        
+        for (NSIndexPath *indexPath in sortedIndexPaths)
+        {
+            NSDictionary *sectionData = [self.tableData objectAtIndex:indexPath.section];
+            NSMutableArray *rowData = sectionData[kRowDataKey];
+            [rowData removeObjectAtIndex:indexPath.row];
+        }
+        self.selectedRows = [NSMutableSet set];
+    };
+    [self tableUpdateAction:deleteSelectedBlock];
+}
+
+
 - (void)addRowAction:(id)sender
 {
-    // Create the sectionDataObject needed to update the table
-    GHTableCommandSectionIndexData *sectionDataObject = [[GHTableCommandSectionIndexData alloc] init];
-    
-    // set the current sections as the "oldSections"
-    sectionDataObject.outdatedSections = [self nonEmptySections];
-    
-    GHTableCommandAllSectionData *rowDataObject = [[GHTableCommandAllSectionData alloc] init];
-    for (NSDictionary *sectionData in self.tableData)
+    TableModelChangeBlock addRowBlock = ^{
+        // insert the new row
+        NSUInteger sectionIndex = rand() % [self numberOfSectionsInTableView:self.tableView];
+        NSUInteger rowIndex = rand() % [self tableView:self.tableView numberOfRowsInSection:sectionIndex];
+        
+        NSDictionary *sectionData = [self.tableData objectAtIndex:sectionIndex];
+        NSMutableArray *rowData = [sectionData objectForKey:kRowDataKey];
+        
+        NSString *title = [self randomCellTitle];
+        [rowData insertObject:title atIndex:rowIndex];
+    };
+    [self tableUpdateAction:addRowBlock];
+}
+
+- (NSDictionary *)tableDataForSectionName:(NSString *)sectionName
+{
+    NSDictionary *sectionData = nil;
+    for (NSDictionary *data in self.tableData)
     {
-        [rowDataObject addOutdatedData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
+        if ([data[kSectionTitleKey] isEqualToString:sectionName])
+        {
+            sectionData = data;
+            break;
+        }
     }
-    
-    // insert the new row
-    NSUInteger sectionIndex = rand() % [self numberOfSectionsInTableView:self.tableView];
-    NSUInteger rowIndex = rand() % [self tableView:self.tableView numberOfRowsInSection:sectionIndex];
-    
-    NSDictionary *sectionData = [self.tableData objectAtIndex:sectionIndex];
-    NSMutableArray *rowData = [sectionData objectForKey:kRowDataKey];
-    
-    NSString *title = [self randomCellTitle];
-    [rowData insertObject:title atIndex:rowIndex];
-    NSLog(@"added row at (%d,%d) title: %@", sectionIndex, rowIndex, title);
-    
-    // now get the updated non empty sections and set them in the updatedSections
-    sectionDataObject.updatedSections = [self nonEmptySections];
-    
-    for (NSDictionary *sectionData in self.tableData)
-    {
-        [rowDataObject addUpdatedData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
-    }
-    
-    [self.tableView updateWithSectionIndexData:sectionDataObject sectionData:rowDataObject withRowAnimation:UITableViewRowAnimationAutomatic callback:nil];
+    return sectionData;
 }
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.tableData count];
+    return [[self nonEmptySections] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSDictionary *sectionData = [self.tableData objectAtIndex:section];
+    NSString *sectionTitle = [[self nonEmptySections] objectAtIndex:section];
+    NSDictionary *sectionData = [self tableDataForSectionName:sectionTitle];
     return [sectionData[kRowDataKey] count];
 }
 
@@ -157,7 +224,9 @@ static NSString *kDefaultCellIdentifier = @"cell";
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCellIdentifier];
     }
-    NSDictionary *sectionData = [self.tableData objectAtIndex:indexPath.section];
+    
+    NSString *sectionTitle = [[self nonEmptySections] objectAtIndex:indexPath.section];
+    NSDictionary *sectionData = [self tableDataForSectionName:sectionTitle];
     NSArray *rowData = sectionData[kRowDataKey];
     cell.textLabel.text = [rowData objectAtIndex:indexPath.row];
     cell.selected = [self.selectedRows containsObject:indexPath];
@@ -166,8 +235,7 @@ static NSString *kDefaultCellIdentifier = @"cell";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    NSDictionary *sectionData = [self.tableData objectAtIndex:section];
-    return sectionData[kSectionTitleKey];
+    return [[self nonEmptySections] objectAtIndex:section];
 }
 
 #pragma mark - UITableViewDelegate
