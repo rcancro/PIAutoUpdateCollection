@@ -105,15 +105,15 @@ static NSString *kDefaultCellIdentifier = @"cell";
 - (void)addRowAction:(id)sender
 {
     // Create the sectionDataObject needed to update the table
-    GHTableCommandSectionData *sectionDataObject = [[GHTableCommandSectionData alloc] init];
+    GHTableCommandSectionIndexData *sectionDataObject = [[GHTableCommandSectionIndexData alloc] init];
     
     // set the current sections as the "oldSections"
-    sectionDataObject.oldSections = [self nonEmptySections];
+    sectionDataObject.outdatedSections = [self nonEmptySections];
     
-    GHTableCommandTableRowData *rowDataObject = [[GHTableCommandTableRowData alloc] init];
+    GHTableCommandAllSectionData *rowDataObject = [[GHTableCommandAllSectionData alloc] init];
     for (NSDictionary *sectionData in self.tableData)
     {
-        [rowDataObject addOldData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
+        [rowDataObject addOutdatedData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
     }
     
     // insert the new row
@@ -135,7 +135,7 @@ static NSString *kDefaultCellIdentifier = @"cell";
         [rowDataObject addUpdatedData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
     }
     
-    [self.tableView updateWithSectionData:sectionDataObject rowData:rowDataObject withRowAnimation:UITableViewRowAnimationAutomatic callback:nil];
+    [self.tableView updateWithSectionIndexData:sectionDataObject sectionData:rowDataObject withRowAnimation:UITableViewRowAnimationAutomatic callback:nil];
 }
 
 #pragma mark - UITableViewDataSource

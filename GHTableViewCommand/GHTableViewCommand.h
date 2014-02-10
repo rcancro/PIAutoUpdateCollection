@@ -11,21 +11,21 @@
 
 typedef NS_ENUM (NSUInteger, GHTableCommandType)
 {
-    kASDATableCommandUpdateRow,
-    kASDATableCommandAddRow,
-    kASDATableCommandRemoveRow,
+    kGHTableCommandUpdateRow,
+    kGHTableCommandAddRow,
+    kGHTableCommandRemoveRow,
     
-    kASDATableCommandRemoveSection,
-    kASDATableCommandAddSection,
+    kGHTableCommandRemoveSection,
+    kGHTableCommandAddSection,
 };
 
 /**
- *  A protocol that all section objects used in SDTableViewCommand must conform to.
+ *  A protocol that all section objects used in GHTableViewCommand must conform to.
  *  A NSString category is included so that a section object could simply be a NSString
  */
-@protocol GHTableSectionObject<NSObject>
+@protocol GHTableSectionProtocol<NSObject>
 /**
- *  required method for SDTableSectionObject.
+ *  required method for GHTableSectionProtocol.
  *
  *  @return returns a unique (to the tableView) identifier of a section (usually just the section's title)
  */
@@ -33,16 +33,16 @@ typedef NS_ENUM (NSUInteger, GHTableCommandType)
 @end
 
 /**
- *  Simple category so that NSString will conform to SDTableSectionObject
+ *  Simple category so that NSString will conform to GHTableSectionProtocol
  */
-@interface NSString(GHTableSectionObject)<GHTableSectionObject>
+@interface NSString(GHTableSectionProtocol)<GHTableSectionProtocol>
 - (NSString *)identifier;
 @end
 
 /**
- *  Protocol that all rows used in SDTableViewCommand must conform to.
+ *  Protocol that all rows used in GHTableViewCommand must conform to.
  */
-@protocol GHTableRowObject<NSObject>
+@protocol GHTableRowProtocol<NSObject>
 /**
  *  Returns a hash to determine if two rows are equal.  For example, two rows that are both for
  *  the same product, say a Klondike bar, would return the same hash.  You can implement the hash to 
@@ -66,33 +66,33 @@ typedef NS_ENUM (NSUInteger, GHTableCommandType)
 @end
 
 /**
- *  Simple object used to pass data to the SDTableViewCommand function that performs table update methods.
+ *  Simple object used to pass data to the GHTableViewCommand function that performs table update methods.
  */
-@interface GHTableCommandSectionData : NSObject
+@interface GHTableCommandSectionIndexData : NSObject
 /**
- *  An array of the old sections in their proper order.  All items in the array should conform to SDTableSectionObject
+ *  An array of the old sections in their proper order.  All items in the array should conform to GHTableSectionProtocol
  */
-@property (nonatomic, copy) NSArray *oldSections;
+@property (nonatomic, copy) NSArray *outdatedSections;
 
 /**
- *  An array of the new sections in their proper order.  All items in the array should conform to SDTableSectionObject
+ *  An array of the new sections in their proper order.  All items in the array should conform to GHTableSectionProtocol
  */
 @property (nonatomic, copy) NSArray *updatedSections;
 
 /**
  *  Convenience method to create GHTableCommandSectionDatax
  *
- *  @param oldSections     an array of id<SDTableSectionObject> represnting the sections in the table before the update
- *  @param updatedSections an array of id<SDTableSectionObject> represnting the sections in the table after the update
+ *  @param outdatedSections     an array of id<GHTableSectionProtocol> represnting the sections in the table before the update
+ *  @param updatedSections an array of id<GHTableSectionProtocol> represnting the sections in the table after the update
  *
  */
-+ (instancetype)sectionDataWithOldSections:(NSArray *)oldSections updatedSections:(NSArray *)updatedSections;
++ (instancetype)sectionDataWithOutdatedSections:(NSArray *)outdatedSections updatedSections:(NSArray *)updatedSections;
 @end
 
 /**
- *  Simple object used to hold rowData needed by SDTableViewCommand
+ *  Simple object used to hold rowData needed by GHTableViewCommand
  */
-@interface GHTableCommandRowData : NSObject
+@interface GHTableCommandSectionData : NSObject
 
 /**
  *  The identifier of the section that these rows belong to
@@ -100,12 +100,12 @@ typedef NS_ENUM (NSUInteger, GHTableCommandType)
 @property (nonatomic, copy) NSString *sectionIdentifier;
 
 /**
- *  An array of objects that conform to SDTableRowObject that were contained in this section before the model changed
+ *  An array of objects that conform to GHTableRowProtocol that were contained in this section before the model changed
  */
-@property (nonatomic, copy) NSArray *oldSectionRows;
+@property (nonatomic, copy) NSArray *outdatedSectionRows;
 
 /**
- *  An array of objects that conform to SDTableRowObject that are contained in this section after the model changed
+ *  An array of objects that conform to GHTableRowProtocol that are contained in this section after the model changed
  */
 @property (nonatomic, copy) NSArray *updatedSectionRows;
 
@@ -115,20 +115,20 @@ typedef NS_ENUM (NSUInteger, GHTableCommandType)
 /**
  *  Object to hold all of the table row data
  */
-@interface GHTableCommandTableRowData : NSObject
+@interface GHTableCommandAllSectionData : NSObject
 
 /**
  *  Add the outdated data for a given section
  *
- *  @param data              an array of id<GHTableRowObject> for the outdated section data
+ *  @param data              an array of id<GHTableRowProtocol> for the outdated section data
  *  @param sectionIdentifier the section
  */
-- (void)addOldData:(NSArray *)data forSection:(NSString *)sectionIdentifier;
+- (void)addOutdatedData:(NSArray *)data forSection:(NSString *)sectionIdentifier;
 
 /**
  *  Add the updated data for a given section
  *
- *  @param data              an array of id<GHTableRowObject> for the updated section data
+ *  @param data              an array of id<GHTableRowProtocol> for the updated section data
  *  @param sectionIdentifier the section
  */
 - (void)addUpdatedData:(NSArray *)data forSection:(NSString *)sectionIdentifier;
@@ -147,7 +147,7 @@ typedef void (^GHTableCommandCallbackBlock)(GHTableViewCommand *command);
 @interface GHTableViewCommand : NSObject
 
 /**
- *  The type of command that will be exectued.  See the ASDATableCommandType enum above.
+ *  The type of command that will be exectued.  See the GHTableCommandType enum above.
  */
 @property (nonatomic, assign, readonly) GHTableCommandType commandType;
 
@@ -179,12 +179,12 @@ typedef void (^GHTableCommandCallbackBlock)(GHTableViewCommand *command);
  *  against the tableView.
  *
  *  @param sectionData   the sectionData that contains the oldSections and newSections
- *  @param rowData       an array of SDTableCommandRowData objects for each section in the table.  Note that the order of the SDTableCommandRowData
+ *  @param rowData       an array of GHTableCommandRowData objects for each section in the table.  Note that the order of the GHTableCommandRowData
                          does not matter since indexes are determined by the sectionIdentifier
  *  @param animationType type of animation to use when running the table update commands
  *  @param block         callBack block that is called right before any table update method.
  */
-- (void)updateWithSectionData:(GHTableCommandSectionData *)sectionData rowData:(GHTableCommandTableRowData *)rowData withRowAnimation:(UITableViewRowAnimation)animationType callback:(GHTableCommandCallbackBlock)block;
+- (void)updateWithSectionIndexData:(GHTableCommandSectionIndexData *)sectionData sectionData:(GHTableCommandAllSectionData *)rowData withRowAnimation:(UITableViewRowAnimation)animationType callback:(GHTableCommandCallbackBlock)block;
 
 @end
 
