@@ -40,6 +40,17 @@ typedef NS_ENUM (NSUInteger, GHTableCommandType)
 @end
 
 /**
+ *  Category to return an array of index paths from largest section, largest row to smallest section smallest row.
+ *  This will allow for a table's data model to delete without worrying about indexes shifting by removing
+ *  a low number section before a high number.
+ * 
+ *  This method will probably sort if all the objects are either NSIndexPaths or GHTableViewCommand objects.
+ */
+@interface NSArray(NSIndexPath)
+- (NSArray *)deleteFriendlySortedArray;
+@end
+
+/**
  *  Protocol that all rows used in GHTableViewCommand must conform to.
  */
 @protocol GHTableRowProtocol<NSObject>
@@ -115,7 +126,7 @@ typedef NS_ENUM (NSUInteger, GHTableCommandType)
 /**
  *  Object to hold all of the table row data
  */
-@interface GHTableCommandAllSectionData : NSObject
+@interface GHTableCommandTableViewData : NSObject
 
 /**
  *  Add the outdated data for a given section
@@ -179,12 +190,12 @@ typedef void (^GHTableCommandCallbackBlock)(GHTableViewCommand *command);
  *  against the tableView.
  *
  *  @param sectionData   the sectionData that contains the oldSections and newSections
- *  @param rowData       an array of GHTableCommandRowData objects for each section in the table.  Note that the order of the GHTableCommandRowData
+ *  @param tableData     an array of GHTableCommandRowData objects for each section in the table.  Note that the order of the GHTableCommandRowData
                          does not matter since indexes are determined by the sectionIdentifier
  *  @param animationType type of animation to use when running the table update commands
  *  @param block         callBack block that is called right before any table update method.
  */
-- (void)updateWithSectionIndexData:(GHTableCommandSectionIndexData *)sectionData sectionData:(GHTableCommandAllSectionData *)rowData withRowAnimation:(UITableViewRowAnimation)animationType callback:(GHTableCommandCallbackBlock)block;
+- (void)updateWithSectionIndexData:(GHTableCommandSectionIndexData *)sectionData sectionData:(GHTableCommandTableViewData *)tableData withRowAnimation:(UITableViewRowAnimation)animationType callback:(GHTableCommandCallbackBlock)block;
 
 @end
 

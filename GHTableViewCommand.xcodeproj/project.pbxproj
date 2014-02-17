@@ -34,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9CAB724218B1BBB8002E7218 /* GHMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHMacros.h; sourceTree = "<group>"; };
 		9CAE4D5A18A844960085EDFF /* GHTableViewCommand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GHTableViewCommand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CAE4D5D18A844960085EDFF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9CAE4D5F18A844960085EDFF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -121,6 +122,7 @@
 				9CAE4D7218A844960085EDFF /* GHExampleViewController.h */,
 				9CAE4D7318A844960085EDFF /* GHExampleViewController.m */,
 				9CAE4D6418A844960085EDFF /* Supporting Files */,
+				9CAB724218B1BBB8002E7218 /* GHMacros.h */,
 			);
 			path = GHTableViewCommand;
 			sourceTree = "<group>";
