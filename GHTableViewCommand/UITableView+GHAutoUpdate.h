@@ -7,7 +7,7 @@
 #import "GHTableViewCommand.h"
 
 /**
- *  A protocol that all section objects used in GHTableCommandSectionIndexData must conform to.
+ *  A protocol that all section objects return by GHTableViewAutoUpdateDataSource must conform to.
  *  A NSString category is included so that a section object could simply be a NSString
  */
 @protocol GHTableSectionProtocol<NSObject>
@@ -27,7 +27,7 @@
 @end
 
 /**
- *  Protocol that all rows used in GHTableCommandSectionData must conform to.
+ *  Protocol that all rows returned from GHTableViewAutoUpdateDataSource must conform to.
  */
 @protocol GHTableRowProtocol<NSObject>
 /**
@@ -52,37 +52,104 @@
 - (NSInteger)attributeHash;
 @end
 
+/**
+ *  The methods in GHTableViewAutoUpdateDataSource will be called twice.  Once before the underlying data has changed
+ *  and once afterwards.  This is an enum so the implementer knows which pass the current call is.  This can be
+ *  useful if the data needs to be reloaded after the update.
+ */
+
+/**
+ *  Enum values for each pass that GHTableViewAutoUpdateDataSource methods will be called
+ */
 typedef NS_ENUM(NSUInteger, GHTableViewAutoUpdatePass)
 {
     kGHTableViewAutoUpdatePassBeforeUpdate,
     kGHTableViewAutoUpdatePassAfterUpdate,
 };
 
+/**
+ *  Protocol that must be implemented in order to use the auto-updating tableview method.  
+ *  These methods act as a data source to give a "snapshot" of the table data.  
+ *  The autoUpdate methods on UITableView require a GHUpdateTableDataBlock.  This block will perform the
+ *  actual changing of the tableview's underlying data.
+ *
+ *  To create the snapshot of the table, the GHTableViewAutoUpdateDataSource methods will be called once
+ *  before the updateBlock is called (with the value kGHTableViewAutoUpdatePassBeforeUpdate for the pass parameter)
+ *  and once after the updateBlock is called (with the value kGHTableViewAutoUpdatePassAfterUpdate for the pass parameter)
+ *
+ *  In each case the implementer should send back the current state of the tableView.
+ */
 @protocol GHTableViewAutoUpdateDataSource<NSObject>
+
+/**
+ *  Returns an array of id<GHTableSectionProtocol> that represent the sections in the table
+ *
+ *  @param pass Used to tell the implementer whether this pass if before or after the table update
+ *
+ *  @return an array of id<GHTableSectionProtocol> that represent the sections in the table
+ */
 - (NSArray *)sectionsForPass:(GHTableViewAutoUpdatePass)pass;
+
+/**
+ *  Returns an array of id<GHTableRowProtocol> for the given section and pass
+ *
+ *  @param section The section of row data to return
+ *  @param pass Used to tell the implementer whether this pass if before or after the table update
+ *
+ *  @return and array of id<GHTableRowProtocol> for the given section/pass
+ */
 - (NSArray *)rowsForSection:(id<GHTableSectionProtocol>)section pass:(GHTableViewAutoUpdatePass)pass;
 @end
 
+/**
+ *  A block passed into the update method of the tableview. This block is where the implementer will 
+ *  update the underlying data in the tableView.
+ *
+ *  This could be as simple as:
+ *    GHUpdateTableDataBlock updateBlock = ^{
+ *       self.tableData = someNewDataArray;
+ *    };
+ *
+ *  Once the block is run the methods in GHTableViewAutoUpdateDataSource will be called a second time to 
+ *  get an updated snapshot of the table.
+ */
 typedef void (^GHUpdateTableDataBlock)();
 
+
+
 /**
- *  Category on UITableView to call the appropriate update commands based on the section and row data passed in.
+ *  Category on UITableView to call the appropriate update commands based data returned from GHTableViewAutoUpdateDataSource.
  */
 @interface UITableView(GHAutoUpdate)
 
 /**
- *  sectionData and rowData are compared and the appropriate table update commands to updaet the table from the old state to the new state are
- *  called against the tableView.
+ *  A method to compare snapshots of a table's data and issue the proper update commands (insert/remove sections and insert/remove/update rows) to the tableView.
  *
- *  @param sectionData   the sectionData that contains the outdatedSections and updatedSections
- *  @param rowData       an array of GHTableCommandRowData objects for each section in the table.  Note that the order of the GHTableCommandRowData does not matter since indexes are determined by sectionData and the sectionIdentifier
- *  @param animationType type of animation to use when running the table update commands
- *  @param block         callBack block that is called right before any table update method.
+ *  @param updateDataSource     The data source that will supply the before and after snapshots of the table's data.
+ *  @param updateBlock          The block that actually performs the update of the table's data.  The methods of GHTableViewAutoUpdateDataSource will be called once before this block
+ *                              is run to get the "before" snapshot.  After the block is run the methods will be called again to get the "after" snapshot
  */
-//- (void)updateWithSectionIndexData:(GHTableCommandSectionIndexData *)sectionData sectionData:(GHTableCommandAllSectionData *)rowData withRowAnimation:(UITableViewRowAnimation)animationType callback:(GHTableCommandCallbackBlock)block;
-
 - (void)updateWithAutoUpdateDataSource:(id<GHTableViewAutoUpdateDataSource>)updateDataSource updateBlock:(GHUpdateTableDataBlock)updateBlock;
+
+/**
+ *  A method to compare snapshots of a table's data and issue the proper update commands (insert/remove sections and insert/remove/update rows) to the tableView.
+ *
+ *  @param updateDataSource     The data source that will supply the before and after snapshots of the table's data.
+ *  @param animationType        The type of animation to perform when issuing update commands.
+ *  @param updateBlock          The block that actually performs the update of the table's data.  The methods of GHTableViewAutoUpdateDataSource will be called once before this block
+ *                              is run to get the "before" snapshot.  After the block is run the methods will be called again to get the "after" snapshot
+ */
 - (void)updateWithAutoUpdateDataSource:(id<GHTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationType:(UITableViewRowAnimation)animationType updateBlock:(GHUpdateTableDataBlock)updateBlock;
+
+/**
+ *  A method to compare snapshots of a table's data and issue the proper update commands (insert/remove sections and insert/remove/update rows) to the tableView.
+ *
+ *  @param updateDataSource     The data source that will supply the before and after snapshots of the table's data.
+ *  @param animationType        The type of animation to perform when issuing update commands.
+ *  @param updateBlock          The block that actually performs the update of the table's data.  The methods of GHTableViewAutoUpdateDataSource will be called once before this block
+ *                              is run to get the "before" snapshot.  After the block is run the methods will be called again to get the "after" snapshot
+ *  @param commandCallbackBlock This block is called right after each GHTableViewCommand is run.  It is a chance for the client to react to the call.
+ */
 - (void)updateWithAutoUpdateDataSource:(id<GHTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationType:(UITableViewRowAnimation)animationType updateBlock:(GHUpdateTableDataBlock)updateBlock commandCallbackblock:(GHTableCommandCallbackBlock)commandCallbackBlock;
 
 @end

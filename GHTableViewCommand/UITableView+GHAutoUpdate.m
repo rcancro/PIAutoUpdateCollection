@@ -17,6 +17,7 @@
 @end
 
 
+#pragma mark - UITableView(GHAutoUpdate)
 @implementation UITableView(GHAutoUpdate)
 
 - (void)updateWithAutoUpdateDataSource:(id<GHTableViewAutoUpdateDataSource>)updateDataSource updateBlock:(GHUpdateTableDataBlock)updateBlock
