@@ -21,6 +21,7 @@
 		9CAE4D8A18A844960085EDFF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9CAE4D8818A844960085EDFF /* InfoPlist.strings */; };
 		9CAE4D8C18A844960085EDFF /* GHTableViewCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CAE4D8B18A844960085EDFF /* GHTableViewCommandTests.m */; };
 		9CAE4D9718A855700085EDFF /* GHTableViewCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CAE4D9618A855700085EDFF /* GHTableViewCommand.m */; };
+		9CD4E6581907643F00CDD6A3 /* UITableView+GHAutoUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD4E6571907643F00CDD6A3 /* UITableView+GHAutoUpdate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,8 @@
 		9CAE4D8B18A844960085EDFF /* GHTableViewCommandTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GHTableViewCommandTests.m; sourceTree = "<group>"; };
 		9CAE4D9518A855700085EDFF /* GHTableViewCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHTableViewCommand.h; sourceTree = "<group>"; };
 		9CAE4D9618A855700085EDFF /* GHTableViewCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHTableViewCommand.m; sourceTree = "<group>"; };
+		9CD4E6561907643F00CDD6A3 /* UITableView+GHAutoUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+GHAutoUpdate.h"; sourceTree = "<group>"; };
+		9CD4E6571907643F00CDD6A3 /* UITableView+GHAutoUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+GHAutoUpdate.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +117,8 @@
 		9CAE4D6318A844960085EDFF /* GHTableViewCommand */ = {
 			isa = PBXGroup;
 			children = (
+				9CD4E6561907643F00CDD6A3 /* UITableView+GHAutoUpdate.h */,
+				9CD4E6571907643F00CDD6A3 /* UITableView+GHAutoUpdate.m */,
 				9CAE4D9518A855700085EDFF /* GHTableViewCommand.h */,
 				9CAE4D9618A855700085EDFF /* GHTableViewCommand.m */,
 				9CAE4D6C18A844960085EDFF /* GHAppDelegate.h */,
@@ -201,7 +206,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = GH;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "ricky cancro";
 				TargetAttributes = {
 					9CAE4D7D18A844960085EDFF = {
@@ -256,6 +261,7 @@
 				9CAE4D9718A855700085EDFF /* GHTableViewCommand.m in Sources */,
 				9CAE4D6A18A844960085EDFF /* main.m in Sources */,
 				9CAE4D7418A844960085EDFF /* GHExampleViewController.m in Sources */,
+				9CD4E6581907643F00CDD6A3 /* UITableView+GHAutoUpdate.m in Sources */,
 				9CAE4D6E18A844960085EDFF /* GHAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,7 +316,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -349,7 +354,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -407,7 +411,6 @@
 		9CAE4D9318A844960085EDFF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GHTableViewCommand.app/GHTableViewCommand";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -430,7 +433,6 @@
 		9CAE4D9418A844960085EDFF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GHTableViewCommand.app/GHTableViewCommand";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

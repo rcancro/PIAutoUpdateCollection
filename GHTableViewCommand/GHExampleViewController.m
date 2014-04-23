@@ -9,18 +9,18 @@
 #import "GHExampleViewController.h"
 #import "GHTableViewCommand.h"
 #import "GHMacros.h"
+#import "UITableView+GHAutoUpdate.h"
 
-static const NSString *kSectionTitleKey = @"section title";
-static const NSString *kRowDataKey = @"data";
-static NSString *kDefaultCellIdentifier = @"cell";
+static NSString * const kSectionTitleKey = @"section title";
+static NSString * const kRowDataKey = @"data";
+static NSString * const kDefaultCellIdentifier = @"cell";
 
 typedef void (^TableModelChangeBlock)();
 
-@interface GHExampleViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface GHExampleViewController ()<UITableViewDataSource, UITableViewDelegate, GHTableViewAutoUpdateDataSource>
 @property (nonatomic, strong) NSMutableArray *tableData;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *actionBarButton;
 @property (nonatomic, strong) NSMutableSet *selectedRows;
-@property (nonatomic, strong) NSMutableDictionary *sectionLookup;
 @end
 
 @implementation GHExampleViewController
@@ -88,49 +88,11 @@ typedef void (^TableModelChangeBlock)();
     [self.tableView reloadData];
 }
 
-- (void)tableUpdateAction:(TableModelChangeBlock)modelChangeBlock
-{
-    // Create the sectionDataObject needed to update the table
-    GHTableCommandSectionIndexData *sectionIndexData = [[GHTableCommandSectionIndexData alloc] init];
-    
-    // set the current sections as the "oldSections"
-    NSMutableArray *outdatedSections = [NSMutableArray array];
-    [self.tableData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [outdatedSections addObject:obj[kSectionTitleKey]];
-    }];
-    sectionIndexData.outdatedSections = outdatedSections;
-    
-    GHTableCommandTableViewData *allSectionData = [[GHTableCommandTableViewData alloc] init];
-    for (NSDictionary *sectionData in self.tableData)
-    {
-        [allSectionData addOutdatedData:sectionData[kRowDataKey] forSection:sectionData[kSectionTitleKey]];
-    }
-    
-    modelChangeBlock();
-    
-    // now get the updated non empty sections and set them in the updatedSections
-    NSMutableArray *updatedSections = [NSMutableArray array];
-    [self.tableData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [updatedSections addObject:obj[kSectionTitleKey]];
-    }];
-    sectionIndexData.updatedSections = updatedSections;
-    
-    for (NSDictionary *sectionData in self.tableData)
-    {
-        NSArray *rowData = sectionData[kRowDataKey];
-        if ([rowData count] > 0)
-        {
-            [allSectionData addUpdatedData:rowData forSection:sectionData[kSectionTitleKey]];
-        }
-    }
-    
-    [self.tableView updateWithSectionIndexData:sectionIndexData sectionData:allSectionData withRowAnimation:UITableViewRowAnimationAutomatic callback:nil];
-}
-
 - (void)deleteSelectedRowsAction:(id)sender
 {
     @weakify(self);
-    TableModelChangeBlock deleteSelectedBlock = ^{
+    
+    [self.tableView updateWithAutoUpdateDataSource:self updateBlock:^{
         @strongify(self);
         NSArray *selectedRows = [self.selectedRows allObjects];
         for (NSIndexPath *indexPath in [selectedRows deleteFriendlySortedArray])
@@ -147,15 +109,14 @@ typedef void (^TableModelChangeBlock)();
         }
         self.selectedRows = [NSMutableSet set];
         [self setupActionButton];
-    };
-    [self tableUpdateAction:deleteSelectedBlock];
+    }];
 }
 
 
 - (void)addRowAction:(id)sender
 {
     @weakify(self);
-    TableModelChangeBlock addRowBlock = ^{
+    [self.tableView updateWithAutoUpdateDataSource:self updateBlock:^{
         @strongify(self);
         // insert the new row
         NSUInteger sectionIndex = rand() % [self numberOfSectionsInTableView:self.tableView];
@@ -167,9 +128,29 @@ typedef void (^TableModelChangeBlock)();
         NSString *title = [self randomCellTitle];
         [rowData insertObject:title atIndex:rowIndex];
         [self setupActionButton];
-    };
-    [self tableUpdateAction:addRowBlock];
+    }];
 }
+
+#pragma mark - GHTableViewAutoUpdateDataSource
+- (NSArray *)sectionsForPass:(GHTableViewAutoUpdatePass)pass
+{
+    return [self.tableData valueForKey:kSectionTitleKey];
+}
+
+- (NSArray *)rowsForSection:(id<GHTableSectionProtocol>)section pass:(GHTableViewAutoUpdatePass)pass
+{
+    NSDictionary *sectionData = nil;
+    for (NSDictionary *tableSection in self.tableData)
+    {
+        if ([tableSection[kSectionTitleKey] isEqualToString:[section identifier]])
+        {
+            sectionData = tableSection;
+            break;
+        }
+    }
+    return sectionData[kRowDataKey];
+}
+
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

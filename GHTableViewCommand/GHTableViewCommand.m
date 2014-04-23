@@ -1,40 +1,11 @@
 //
-//  GHTableCommand.h
-//  GHTableViewCommand
+//  SDTableViewCommand.m
 //
-//  Created by ricky cancro on 2/9/14.
-//  Copyright (c) 2014 ricky cancro. All rights reserved.
+//  Created by ricky cancro on 2/6/14.
 //
-
 
 #import "GHTableViewCommand.h"
-
-#pragma mark - GHTableCommandSectionData
-@implementation GHTableCommandSectionIndexData
-+ (instancetype)sectionDataWithOutdatedSections:(NSArray *)outdatedSections updatedSections:(NSArray *)updatedSections
-{
-    GHTableCommandSectionIndexData *data = [[GHTableCommandSectionIndexData alloc] init];
-    data.outdatedSections = outdatedSections;
-    data.updatedSections = updatedSections;
-    return data;
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"outdated Indexes:\n%@\n\nupdated Indexes:\n%@\n\n", self.outdatedSections, self.updatedSections];
-}
-
-@end
-
-#pragma mark - NSString(GHTableSectionObject)
-@implementation NSString(GHTableSectionProtocol)
-
-- (NSString *)identifier
-{
-    return self;
-}
-
-@end
+#import "UITableView+GHAutoUpdate.h"
 
 @implementation NSArray(NSIndexPath)
 - (NSArray *)deleteFriendlySortedArray
@@ -80,66 +51,6 @@
 @end
 
 
-#pragma mark - GHTableCommandRowData
-@implementation GHTableCommandSectionData
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"Section: %@\noutdated Rows: %@\nupdated Rows: %@\n", self.sectionIdentifier, self.outdatedSectionRows, self.updatedSectionRows];
-}
-@end
-
-@interface GHTableCommandTableViewData()
-@property (nonatomic, strong, readwrite) NSMutableDictionary *tableRows;
-@end
-
-@implementation GHTableCommandTableViewData
-
-- (id)init
-{
-    self = [super init];
-    if (self)
-    {
-        self.tableRows = [NSMutableDictionary dictionary];
-    }
-    return self;
-}
-
-- (void)addOutdatedData:(NSArray *)data forSection:(NSString *)sectionIdentifier
-{
-    GHTableCommandSectionData *rowObject = self.tableRows[sectionIdentifier];
-    if (!rowObject)
-    {
-        rowObject = [[GHTableCommandSectionData alloc] init];
-        rowObject.sectionIdentifier = sectionIdentifier;
-    }
-    rowObject.outdatedSectionRows = data;
-    [self.tableRows setObject:rowObject forKey:sectionIdentifier];
-}
-
-- (void)addUpdatedData:(NSArray *)data forSection:(NSString *)sectionIdentifier
-{
-    GHTableCommandSectionData *rowObject = self.tableRows[sectionIdentifier];
-    if (!rowObject)
-    {
-        rowObject = [[GHTableCommandSectionData alloc] init];
-        rowObject.sectionIdentifier = sectionIdentifier;
-    }
-    rowObject.updatedSectionRows = data;
-    [self.tableRows setObject:rowObject forKey:sectionIdentifier];
-}
-
-- (NSString *)description
-{
-    NSMutableString *tableData = [NSMutableString stringWithString:@""];
-    for (GHTableCommandSectionData *sectionData in [self.tableRows allValues])
-    {
-        [tableData appendFormat:@"%@\n", sectionData];
-    }
-    return tableData;
-}
-
-@end
-
 #pragma mark - GHTableViewCommand()
 @interface GHTableViewCommand()
 @property (nonatomic, assign, readwrite) NSUInteger row;
@@ -150,29 +61,100 @@
 
 @end
 
+@implementation GHTableViewCommand
+
++ (instancetype)removeRowCommandForRow:(NSUInteger)row sectionIdentifier:(NSString *)sectionIdentifier
+{
+    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
+    command.row = row;
+    command.sectionIdentifier = sectionIdentifier;
+    command.commandType = kGHTableCommandRemoveRow;
+    return command;
+}
+
++ (instancetype)addRowCommandForRow:(NSUInteger)row sectionIdentifier:(NSString *)sectionIdentifier
+{
+    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
+    command.row = row;
+    command.sectionIdentifier = sectionIdentifier;
+    command.commandType = kGHTableCommandAddRow;
+    return command;
+}
+
++ (instancetype)updateRowCommandForRow:(NSUInteger)row sectionIdentifier:(NSString *)sectionIdentifier
+{
+    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
+    command.row = row;
+    command.sectionIdentifier = sectionIdentifier;
+    command.commandType = kGHTableCommandUpdateRow;
+    return command;
+}
+
++ (instancetype)removeSectionCommandWithSectionIdentifier:(NSString *)sectionIdentifier
+{
+    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
+    command.sectionIdentifier = sectionIdentifier;
+    command.commandType = kGHTableCommandRemoveSection;
+    return command;
+}
+
++ (instancetype)addSectionCommandWithSectionIdentifier:(NSString *)sectionIdentifier
+{
+    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
+    command.sectionIdentifier = sectionIdentifier;
+    command.commandType = kGHTableCommandAddSection;
+    return command;
+}
+
+- (NSString *)description
+{
+    NSMutableString *description = [NSMutableString stringWithString:@"Table Command: "];
+    switch (self.commandType)
+    {
+        case kGHTableCommandUpdateRow:
+            [description appendFormat:@"update row %tu %@", self.row, self.sectionIdentifier];
+            break;
+            
+        case kGHTableCommandRemoveRow:
+            [description appendFormat:@"remove row %tu %@", self.row, self.sectionIdentifier];
+            break;
+            
+        case kGHTableCommandAddRow:
+            [description appendFormat:@"add row at %tu %@", self.row, self.sectionIdentifier];
+            break;
+            
+        case kGHTableCommandAddSection:
+            [description appendFormat:@"add section at %@", self.sectionIdentifier];
+            break;
+            
+        case kGHTableCommandRemoveSection:
+            [description appendFormat:@"remove section at %@", self.sectionIdentifier];
+            break;
+    }
+    return description;
+}
+
+@end
+
+
+
+
 #pragma mark - GHTableCommandManager
-@interface GHTableCommandManager : NSObject
+@interface GHTableCommandManager()
 @property (nonatomic, strong) NSMutableArray *updateRowCommands;
 @property (nonatomic, strong) NSMutableArray *removeRowCommands;
 @property (nonatomic, strong) NSMutableArray *insertRowCommands;
 @property (nonatomic, strong) NSMutableArray *removeSectionCommands;
 @property (nonatomic, strong) NSMutableArray *insertSectionCommands;
+
+@property (nonatomic, strong) NSMutableDictionary *outdatedSectionLookup;
+@property (nonatomic, strong) NSMutableDictionary *updatedSectionLookup;
+
 @end
 
 @implementation GHTableCommandManager
 
-+ (GHTableCommandManager *)sharedInstance
-{
-    static GHTableCommandManager *gCommandManager = nil;
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^{
-        gCommandManager = [[GHTableCommandManager alloc] init];
-        // Do any other initialisation stuff here
-    });
-    return gCommandManager;
-}
-
-- (id)init
+- (id)initWithOutdatedSections:(NSArray *)outdatedSections updatedSections:(NSArray *)updatedSections
 {
     self = [super init];
     if (self)
@@ -182,6 +164,25 @@
         _insertRowCommands = [NSMutableArray array];
         _removeSectionCommands = [NSMutableArray array];
         _insertSectionCommands = [NSMutableArray array];
+        
+        _outdatedSectionLookup = [NSMutableDictionary dictionary];
+        _updatedSectionLookup = [NSMutableDictionary dictionary];
+        
+        NSUInteger index = 0;
+        for (id<GHTableSectionProtocol> section in outdatedSections)
+        {
+            _outdatedSectionLookup[section.identifier] = @(index);
+            index++;
+        }
+        
+        index = 0;
+        for (id<GHTableSectionProtocol> section in updatedSections)
+        {
+            _updatedSectionLookup[section.identifier] = @(index);
+            index++;
+        }
+        [self addCommandsForOutdatedSectionsObjects:outdatedSections newSectionObjects:updatedSections];
+        
     }
     return self;
 }
@@ -197,8 +198,35 @@
     
     // Sort deletions so the highest indexes are removed first.  This isn't required for the tableView update calls,
     // but if helpful for the callback in case the user is also deleting something at the same index paths
-    self.removeSectionCommands = [NSMutableArray arrayWithArray:[self.removeSectionCommands deleteFriendlySortedArray]];
-    self.removeRowCommands = [NSMutableArray arrayWithArray:[self.removeRowCommands deleteFriendlySortedArray]];
+    
+    NSComparator commandSortComparator = ^NSComparisonResult(GHTableViewCommand *obj1, GHTableViewCommand *obj2)
+    {
+        NSComparisonResult result = NSOrderedSame;
+        if (obj1.resolvedIndexPath.section > obj2.resolvedIndexPath.section)
+        {
+            result = NSOrderedAscending;
+        }
+        else if (obj1.resolvedIndexPath.section < obj2.resolvedIndexPath.section)
+        {
+            result = NSOrderedDescending;
+        }
+        else
+        {
+            // ok we have the same section
+            if (obj1.resolvedIndexPath.row > obj2.resolvedIndexPath.row)
+            {
+                result =  NSOrderedAscending;
+            }
+            else if (obj1.resolvedIndexPath.row < obj2.resolvedIndexPath.row)
+            {
+                result = NSOrderedDescending;
+            }
+        }
+        return result;
+    };
+    
+    [self.removeSectionCommands sortUsingComparator:commandSortComparator];
+    [self.removeRowCommands sortUsingComparator:commandSortComparator];
     
     // NOTE: All removes use indexes as if no sections or rows have been removed.  In other words if we have an section with rows:
     // A
@@ -283,11 +311,11 @@
     self.insertRowCommands = self.insertSectionCommands = self.updateRowCommands = self.removeRowCommands = self.removeSectionCommands = nil;
 }
 
-- (void)addCommands:(NSArray *)commands outdatedSectionLookup:(NSDictionary *)currentSectionLookup updatedSectionLookup:(NSDictionary *)updatedSectionLookup
+- (void)addCommands:(NSArray *)commands
 {
     for (GHTableViewCommand *command in commands)
     {
-        [self addCommand:command currentSectionLookup:currentSectionLookup updatedSectionLookup:updatedSectionLookup];
+        [self addCommand:command currentSectionLookup:self.outdatedSectionLookup updatedSectionLookup:self.updatedSectionLookup];
     }
 }
 
@@ -337,12 +365,33 @@
     }
 }
 
-@end
+
+- (void)addCommandsForOutdatedSectionsObjects:(NSArray *)outdatedSections newSectionObjects:(NSArray *)newSections
+{
+    NSMutableArray *commands = [NSMutableArray array];
+    
+    // get the removed Sections
+    NSMutableArray *removedSections = [NSMutableArray arrayWithArray:outdatedSections];
+    [removedSections removeObjectsInArray:newSections];
+    
+    // added Sections
+    NSMutableArray *addedSections = [NSMutableArray arrayWithArray:newSections];
+    [addedSections removeObjectsInArray:outdatedSections];
+    
+    for (id<GHTableSectionProtocol> section in removedSections)
+    {
+        [commands addObject:[GHTableViewCommand removeSectionCommandWithSectionIdentifier:section.identifier]];
+    }
+    
+    for (id<GHTableSectionProtocol> section in addedSections)
+    {
+        [commands addObject:[GHTableViewCommand addSectionCommandWithSectionIdentifier:section.identifier]];
+    }
+    [self addCommands:commands];
+}
 
 
-@implementation GHTableViewCommand
-
-+ (NSArray *)commandsForOutdatedData:(NSArray *)outdatedData newData:(NSArray *)newData forSectionIdentifier:(NSString *)identifier
+- (void)addCommandsForOutdatedData:(NSArray *)outdatedData newData:(NSArray *)newData forSectionIdentifier:(NSString *)identifier
 {
     NSMutableArray *commands = [NSMutableArray array];
     
@@ -381,152 +430,41 @@
             }
         }
     }
-    return commands;
-}
-
-
-+ (NSArray *)commandsForOutdatedSectionsObjects:(NSArray *)outdatedSections newSectionObjects:(NSArray *)newSections inTableView:(UITableView *)tableView
-{
-    NSMutableArray *commands = [NSMutableArray array];
-    
-    // get the removed Sections
-    NSMutableArray *removedSections = [NSMutableArray arrayWithArray:outdatedSections];
-    [removedSections removeObjectsInArray:newSections];
-    
-    // added Sections
-    NSMutableArray *addedSections = [NSMutableArray arrayWithArray:newSections];
-    [addedSections removeObjectsInArray:outdatedSections];
-    
-    for (id<GHTableSectionProtocol> section in removedSections)
-    {
-        [commands addObject:[GHTableViewCommand removeSectionCommandWithSectionIdentifier:section.identifier]];
-    }
-    
-    for (id<GHTableSectionProtocol> section in addedSections)
-    {
-        [commands addObject:[GHTableViewCommand addSectionCommandWithSectionIdentifier:section.identifier]];
-        
-        NSUInteger sectionIndex = [newSections indexOfObject:section];
-        NSInteger newRowCount = [tableView.dataSource tableView:tableView numberOfRowsInSection:sectionIndex];
-        for (NSInteger row =0;newRowCount < 0; row++)
-        {
-            [commands addObject:[GHTableViewCommand addRowCommandForRow:row sectionIdentifier:section.identifier]];
-        }
-    }
-    
-    return commands;
-}
-
-+ (instancetype)removeRowCommandForRow:(NSUInteger)row sectionIdentifier:(NSString *)sectionIdentifier
-{
-    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
-    command.row = row;
-    command.sectionIdentifier = sectionIdentifier;
-    command.commandType = kGHTableCommandRemoveRow;
-    return command;
-}
-
-+ (instancetype)addRowCommandForRow:(NSUInteger)row sectionIdentifier:(NSString *)sectionIdentifier
-{
-    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
-    command.row = row;
-    command.sectionIdentifier = sectionIdentifier;
-    command.commandType = kGHTableCommandAddRow;
-    return command;
-}
-
-+ (instancetype)updateRowCommandForRow:(NSUInteger)row sectionIdentifier:(NSString *)sectionIdentifier
-{
-    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
-    command.row = row;
-    command.sectionIdentifier = sectionIdentifier;
-    command.commandType = kGHTableCommandUpdateRow;
-    return command;
-}
-
-+ (instancetype)removeSectionCommandWithSectionIdentifier:(NSString *)sectionIdentifier
-{
-    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
-    command.sectionIdentifier = sectionIdentifier;
-    command.commandType = kGHTableCommandRemoveSection;
-    return command;
-}
-
-+ (instancetype)addSectionCommandWithSectionIdentifier:(NSString *)sectionIdentifier
-{
-    GHTableViewCommand *command = [[GHTableViewCommand alloc] init];
-    command.sectionIdentifier = sectionIdentifier;
-    command.commandType = kGHTableCommandAddSection;
-    return command;
+    [self addCommands:commands];
 }
 
 - (NSString *)description
 {
-    NSMutableString *description = [NSMutableString stringWithString:@"Table Command: "];
-    switch (self.commandType)
-    {
-        case kGHTableCommandUpdateRow:
-            [description appendFormat:@"update row %d %@", self.row, self.sectionIdentifier];
-            break;
-            
-        case kGHTableCommandRemoveRow:
-            [description appendFormat:@"remove row %d %@", self.row, self.sectionIdentifier];
-            break;
-            
-        case kGHTableCommandAddRow:
-            [description appendFormat:@"add row at %d %@", self.row, self.sectionIdentifier];
-            break;
-            
-        case kGHTableCommandAddSection:
-            [description appendFormat:@"add section at %@", self.sectionIdentifier];
-            break;
-            
-        case kGHTableCommandRemoveSection:
-            [description appendFormat:@"remove section at %@", self.sectionIdentifier];
-            break;
-    }
-    return description;
+    NSMutableString *desc = [NSMutableString string];
+    [desc appendString:[self descriptionForCommands:self.removeSectionCommands commandsTitle:@"Remove Section"]];
+    [desc appendString:[self descriptionForCommands:self.insertSectionCommands commandsTitle:@"Insert Section"]];
+    
+    [desc appendString:[self descriptionForCommands:self.removeRowCommands commandsTitle:@"Remove Row"]];
+    [desc appendString:[self descriptionForCommands:self.insertRowCommands commandsTitle:@"Insert Row"]];
+    [desc appendString:[self descriptionForCommands:self.updateRowCommands commandsTitle:@"Update Row"]];
+    return desc;
 }
 
-@end
-
-@implementation UITableView(GHTableViewCommand)
-
-
-- (void)updateWithSectionIndexData:(GHTableCommandSectionIndexData *)sectionIndexData sectionData:(GHTableCommandTableViewData *)tableData withRowAnimation:(UITableViewRowAnimation)animationType callback:(GHTableCommandCallbackBlock)block
+- (NSString *)descriptionForCommands:(NSArray *)commands commandsTitle:(NSString *)title
 {
-    [self beginUpdates];
-    GHTableCommandManager *commandManager = [[GHTableCommandManager alloc] init];
+    NSMutableString *desc = [NSMutableString stringWithString:@""];
     
-    NSMutableDictionary *outdatedSectionLookup = [NSMutableDictionary dictionary];
-    NSMutableDictionary *newSectionLookup = [NSMutableDictionary dictionary];
-    
-    NSUInteger index = 0;
-    for (id<GHTableSectionProtocol> section in sectionIndexData.outdatedSections)
+    if (0 < [commands count])
     {
-        [outdatedSectionLookup setObject:@(index) forKey:section.identifier];
-        index++;
+        [desc appendFormat:@"-------- %@ Commands ----------", title];
     }
     
-    index = 0;
-    for (id<GHTableSectionProtocol> section in sectionIndexData.updatedSections)
+    for (GHTableViewCommand *command in commands)
     {
-        [newSectionLookup setObject:@(index) forKey:section.identifier];
-        index++;
+        [desc appendFormat:@"%@\n", [command description]];
     }
     
-    NSArray *sectionCommands = [GHTableViewCommand commandsForOutdatedSectionsObjects:sectionIndexData.outdatedSections newSectionObjects:sectionIndexData.updatedSections inTableView:self];
-    [commandManager addCommands:sectionCommands outdatedSectionLookup:outdatedSectionLookup updatedSectionLookup:newSectionLookup];
-    
-    for (GHTableCommandSectionData *data in [tableData.tableRows allValues])
+    if (0 < [commands count])
     {
-        NSArray *rowCommands = [GHTableViewCommand commandsForOutdatedData:data.outdatedSectionRows newData:data.updatedSectionRows forSectionIdentifier:data.sectionIdentifier];
-        [commandManager addCommands:rowCommands outdatedSectionLookup:outdatedSectionLookup updatedSectionLookup:newSectionLookup];
+        [desc appendString:@"\n\n"];
     }
-
-    [commandManager runCommands:self withRowAnimation:animationType  callback:block];
-    [self endUpdates];
+    
+    return desc;
 }
-
 
 @end
