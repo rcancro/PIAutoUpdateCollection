@@ -1,15 +1,15 @@
 //
-//  GHFirstViewController.m
-//  GHTableViewCommand
+//  SDFirstViewController.m
+//  SDTableViewCommand
 //
 //  Created by ricky cancro on 2/9/14.
 //  Copyright (c) 2014 ricky cancro. All rights reserved.
 //
 
-#import "GHExampleViewController.h"
-#import "GHTableViewCommand.h"
-#import "GHMacros.h"
-#import "UITableView+GHAutoUpdate.h"
+#import "SDExampleViewController.h"
+#import "SDTableViewCommand.h"
+#import "SDMacros.h"
+#import "UITableView+SDAutoUpdate.h"
 
 static NSString * const kSectionTitleKey = @"section title";
 static NSString * const kRowDataKey = @"data";
@@ -17,13 +17,13 @@ static NSString * const kDefaultCellIdentifier = @"cell";
 
 typedef void (^TableModelChangeBlock)();
 
-@interface GHExampleViewController ()<UITableViewDataSource, UITableViewDelegate, GHTableViewAutoUpdateDataSource>
+@interface SDExampleViewController ()<UITableViewDataSource, UITableViewDelegate, SDTableViewAutoUpdateDataSource>
 @property (nonatomic, strong) NSMutableArray *tableData;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *actionBarButton;
 @property (nonatomic, strong) NSMutableSet *selectedRows;
 @end
 
-@implementation GHExampleViewController
+@implementation SDExampleViewController
 
 - (void)viewDidLoad
 {
@@ -131,13 +131,13 @@ typedef void (^TableModelChangeBlock)();
     }];
 }
 
-#pragma mark - GHTableViewAutoUpdateDataSource
-- (NSArray *)sectionsForPass:(GHTableViewAutoUpdatePass)pass
+#pragma mark - SDTableViewAutoUpdateDataSource
+- (NSArray *)sectionsForPass:(SDTableViewAutoUpdatePass)pass
 {
     return [self.tableData valueForKey:kSectionTitleKey];
 }
 
-- (NSArray *)rowsForSection:(id<GHTableSectionProtocol>)section pass:(GHTableViewAutoUpdatePass)pass
+- (NSArray *)rowsForSection:(id<SDTableSectionProtocol>)section pass:(SDTableViewAutoUpdatePass)pass
 {
     NSDictionary *sectionData = nil;
     for (NSDictionary *tableSection in self.tableData)

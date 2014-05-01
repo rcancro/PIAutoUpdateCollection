@@ -1,14 +1,14 @@
 //
-//  GHAppDelegate.m
-//  GHTableViewCommand
+//  SDAppDelegate.m
+//  SDTableViewCommand
 //
 //  Created by ricky cancro on 2/9/14.
 //  Copyright (c) 2014 ricky cancro. All rights reserved.
 //
 
-#import "GHAppDelegate.h"
+#import "SDAppDelegate.h"
 
-@implementation GHAppDelegate
+@implementation SDAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
