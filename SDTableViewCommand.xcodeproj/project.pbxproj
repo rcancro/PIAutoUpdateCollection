@@ -10,10 +10,15 @@
 		9CAE4D5E18A844960085EDFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CAE4D5D18A844960085EDFF /* Foundation.framework */; };
 		9CAE4D6018A844960085EDFF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CAE4D5F18A844960085EDFF /* CoreGraphics.framework */; };
 		9CAE4D6218A844960085EDFF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CAE4D6118A844960085EDFF /* UIKit.framework */; };
+		9CB69C8219E23E2200F109AB /* CBLAutoUpdateCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB69C7E19E23E2200F109AB /* CBLAutoUpdateCommand.m */; };
+		9CB69C8319E23E2200F109AB /* UITableView+CBLAutoUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB69C8119E23E2200F109AB /* UITableView+CBLAutoUpdate.m */; };
+		9CB69C8619E2446300F109AB /* CBLCollectionViewExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB69C8519E2446300F109AB /* CBLCollectionViewExampleViewController.m */; };
+		9CB69C8919E2467C00F109AB /* CBLExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB69C8819E2467C00F109AB /* CBLExampleViewController.m */; };
+		9CB69C8C19E249EC00F109AB /* UIColor+CBLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB69C8B19E249EC00F109AB /* UIColor+CBLAdditions.m */; };
+		9CB69C8E19E24C2000F109AB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CB69C8D19E24C2000F109AB /* Images.xcassets */; };
+		9CB69C9119E2533200F109AB /* UICollectionView+CBLAutoUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB69C9019E2533200F109AB /* UICollectionView+CBLAutoUpdate.m */; };
 		9CEB2F0E1912D900008731D2 /* SDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEB2F061912D900008731D2 /* SDAppDelegate.m */; };
-		9CEB2F0F1912D900008731D2 /* SDExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEB2F081912D900008731D2 /* SDExampleViewController.m */; };
-		9CEB2F101912D900008731D2 /* SDTableViewCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEB2F0B1912D900008731D2 /* SDTableViewCommand.m */; };
-		9CEB2F111912D900008731D2 /* UITableView+SDAutoUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEB2F0D1912D900008731D2 /* UITableView+SDAutoUpdate.m */; };
+		9CEB2F0F1912D900008731D2 /* CBLTableViewExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEB2F081912D900008731D2 /* CBLTableViewExampleViewController.m */; };
 		9CEB2F141912D949008731D2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9CEB2F121912D949008731D2 /* Main.storyboard */; };
 		9CEB2F181912D95D008731D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEB2F151912D95D008731D2 /* main.m */; };
 		9CEB2F191912D95D008731D2 /* SDTableViewCommand-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CEB2F161912D95D008731D2 /* SDTableViewCommand-Info.plist */; };
@@ -26,15 +31,24 @@
 		9CAE4D5F18A844960085EDFF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		9CAE4D6118A844960085EDFF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9CAE4D7F18A844960085EDFF /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		9CB69C7D19E23E2200F109AB /* CBLAutoUpdateCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBLAutoUpdateCommand.h; path = SDTableViewCommand/CBLAutoUpdateCommand.h; sourceTree = SOURCE_ROOT; };
+		9CB69C7E19E23E2200F109AB /* CBLAutoUpdateCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBLAutoUpdateCommand.m; path = SDTableViewCommand/CBLAutoUpdateCommand.m; sourceTree = SOURCE_ROOT; };
+		9CB69C7F19E23E2200F109AB /* CBLAutoUpdateProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBLAutoUpdateProtocols.h; path = SDTableViewCommand/CBLAutoUpdateProtocols.h; sourceTree = SOURCE_ROOT; };
+		9CB69C8019E23E2200F109AB /* UITableView+CBLAutoUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UITableView+CBLAutoUpdate.h"; path = "SDTableViewCommand/UITableView+CBLAutoUpdate.h"; sourceTree = SOURCE_ROOT; };
+		9CB69C8119E23E2200F109AB /* UITableView+CBLAutoUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UITableView+CBLAutoUpdate.m"; path = "SDTableViewCommand/UITableView+CBLAutoUpdate.m"; sourceTree = SOURCE_ROOT; };
+		9CB69C8419E2446300F109AB /* CBLCollectionViewExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBLCollectionViewExampleViewController.h; path = SDTableViewCommand/CBLCollectionViewExampleViewController.h; sourceTree = SOURCE_ROOT; };
+		9CB69C8519E2446300F109AB /* CBLCollectionViewExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBLCollectionViewExampleViewController.m; path = SDTableViewCommand/CBLCollectionViewExampleViewController.m; sourceTree = SOURCE_ROOT; };
+		9CB69C8719E2467C00F109AB /* CBLExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBLExampleViewController.h; path = SDTableViewCommand/CBLExampleViewController.h; sourceTree = SOURCE_ROOT; };
+		9CB69C8819E2467C00F109AB /* CBLExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBLExampleViewController.m; path = SDTableViewCommand/CBLExampleViewController.m; sourceTree = SOURCE_ROOT; };
+		9CB69C8A19E249EC00F109AB /* UIColor+CBLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+CBLAdditions.h"; path = "SDTableViewCommand/UIColor+CBLAdditions.h"; sourceTree = SOURCE_ROOT; };
+		9CB69C8B19E249EC00F109AB /* UIColor+CBLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+CBLAdditions.m"; path = "SDTableViewCommand/UIColor+CBLAdditions.m"; sourceTree = SOURCE_ROOT; };
+		9CB69C8D19E24C2000F109AB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SDTableViewCommand/Images.xcassets; sourceTree = SOURCE_ROOT; };
+		9CB69C8F19E2533200F109AB /* UICollectionView+CBLAutoUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UICollectionView+CBLAutoUpdate.h"; path = "SDTableViewCommand/UICollectionView+CBLAutoUpdate.h"; sourceTree = SOURCE_ROOT; };
+		9CB69C9019E2533200F109AB /* UICollectionView+CBLAutoUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UICollectionView+CBLAutoUpdate.m"; path = "SDTableViewCommand/UICollectionView+CBLAutoUpdate.m"; sourceTree = SOURCE_ROOT; };
 		9CEB2F051912D900008731D2 /* SDAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDAppDelegate.h; path = SDTableViewCommand/SDAppDelegate.h; sourceTree = SOURCE_ROOT; };
 		9CEB2F061912D900008731D2 /* SDAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDAppDelegate.m; path = SDTableViewCommand/SDAppDelegate.m; sourceTree = SOURCE_ROOT; };
-		9CEB2F071912D900008731D2 /* SDExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDExampleViewController.h; path = SDTableViewCommand/SDExampleViewController.h; sourceTree = SOURCE_ROOT; };
-		9CEB2F081912D900008731D2 /* SDExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDExampleViewController.m; path = SDTableViewCommand/SDExampleViewController.m; sourceTree = SOURCE_ROOT; };
-		9CEB2F091912D900008731D2 /* SDMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDMacros.h; path = SDTableViewCommand/SDMacros.h; sourceTree = SOURCE_ROOT; };
-		9CEB2F0A1912D900008731D2 /* SDTableViewCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDTableViewCommand.h; path = SDTableViewCommand/SDTableViewCommand.h; sourceTree = SOURCE_ROOT; };
-		9CEB2F0B1912D900008731D2 /* SDTableViewCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDTableViewCommand.m; path = SDTableViewCommand/SDTableViewCommand.m; sourceTree = SOURCE_ROOT; };
-		9CEB2F0C1912D900008731D2 /* UITableView+SDAutoUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UITableView+SDAutoUpdate.h"; path = "SDTableViewCommand/UITableView+SDAutoUpdate.h"; sourceTree = SOURCE_ROOT; };
-		9CEB2F0D1912D900008731D2 /* UITableView+SDAutoUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UITableView+SDAutoUpdate.m"; path = "SDTableViewCommand/UITableView+SDAutoUpdate.m"; sourceTree = SOURCE_ROOT; };
+		9CEB2F071912D900008731D2 /* CBLTableViewExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBLTableViewExampleViewController.h; path = SDTableViewCommand/CBLTableViewExampleViewController.h; sourceTree = SOURCE_ROOT; };
+		9CEB2F081912D900008731D2 /* CBLTableViewExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBLTableViewExampleViewController.m; path = SDTableViewCommand/CBLTableViewExampleViewController.m; sourceTree = SOURCE_ROOT; };
 		9CEB2F131912D949008731D2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = SDTableViewCommand/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		9CEB2F151912D95D008731D2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = SDTableViewCommand/main.m; sourceTree = SOURCE_ROOT; };
 		9CEB2F161912D95D008731D2 /* SDTableViewCommand-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "SDTableViewCommand-Info.plist"; path = "SDTableViewCommand/SDTableViewCommand-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -87,17 +101,26 @@
 		9CAE4D6318A844960085EDFF /* SDTableViewCommand */ = {
 			isa = PBXGroup;
 			children = (
+				9CB69C7D19E23E2200F109AB /* CBLAutoUpdateCommand.h */,
+				9CB69C7E19E23E2200F109AB /* CBLAutoUpdateCommand.m */,
+				9CB69C7F19E23E2200F109AB /* CBLAutoUpdateProtocols.h */,
+				9CB69C8019E23E2200F109AB /* UITableView+CBLAutoUpdate.h */,
+				9CB69C8119E23E2200F109AB /* UITableView+CBLAutoUpdate.m */,
 				9CEB2F121912D949008731D2 /* Main.storyboard */,
 				9CEB2F051912D900008731D2 /* SDAppDelegate.h */,
 				9CEB2F061912D900008731D2 /* SDAppDelegate.m */,
-				9CEB2F071912D900008731D2 /* SDExampleViewController.h */,
-				9CEB2F081912D900008731D2 /* SDExampleViewController.m */,
-				9CEB2F091912D900008731D2 /* SDMacros.h */,
-				9CEB2F0A1912D900008731D2 /* SDTableViewCommand.h */,
-				9CEB2F0B1912D900008731D2 /* SDTableViewCommand.m */,
-				9CEB2F0C1912D900008731D2 /* UITableView+SDAutoUpdate.h */,
-				9CEB2F0D1912D900008731D2 /* UITableView+SDAutoUpdate.m */,
+				9CB69C8719E2467C00F109AB /* CBLExampleViewController.h */,
+				9CB69C8819E2467C00F109AB /* CBLExampleViewController.m */,
+				9CEB2F071912D900008731D2 /* CBLTableViewExampleViewController.h */,
+				9CEB2F081912D900008731D2 /* CBLTableViewExampleViewController.m */,
+				9CB69C8419E2446300F109AB /* CBLCollectionViewExampleViewController.h */,
+				9CB69C8519E2446300F109AB /* CBLCollectionViewExampleViewController.m */,
+				9CB69C8A19E249EC00F109AB /* UIColor+CBLAdditions.h */,
+				9CB69C8B19E249EC00F109AB /* UIColor+CBLAdditions.m */,
 				9CAE4D6418A844960085EDFF /* Supporting Files */,
+				9CB69C8D19E24C2000F109AB /* Images.xcassets */,
+				9CB69C8F19E2533200F109AB /* UICollectionView+CBLAutoUpdate.h */,
+				9CB69C9019E2533200F109AB /* UICollectionView+CBLAutoUpdate.m */,
 			);
 			name = SDTableViewCommand;
 			path = GHTableViewCommand;
@@ -140,7 +163,7 @@
 		9CAE4D5218A844960085EDFF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = SD;
+				CLASSPREFIX = CBL;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "ricky cancro";
 			};
@@ -168,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9CEB2F191912D95D008731D2 /* SDTableViewCommand-Info.plist in Resources */,
+				9CB69C8E19E24C2000F109AB /* Images.xcassets in Resources */,
 				9CEB2F1C1912D9A0008731D2 /* InfoPlist.strings in Resources */,
 				9CEB2F141912D949008731D2 /* Main.storyboard in Resources */,
 			);
@@ -180,9 +204,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CEB2F111912D900008731D2 /* UITableView+SDAutoUpdate.m in Sources */,
-				9CEB2F101912D900008731D2 /* SDTableViewCommand.m in Sources */,
-				9CEB2F0F1912D900008731D2 /* SDExampleViewController.m in Sources */,
+				9CB69C8619E2446300F109AB /* CBLCollectionViewExampleViewController.m in Sources */,
+				9CB69C8C19E249EC00F109AB /* UIColor+CBLAdditions.m in Sources */,
+				9CB69C9119E2533200F109AB /* UICollectionView+CBLAutoUpdate.m in Sources */,
+				9CB69C8319E23E2200F109AB /* UITableView+CBLAutoUpdate.m in Sources */,
+				9CB69C8919E2467C00F109AB /* CBLExampleViewController.m in Sources */,
+				9CEB2F0F1912D900008731D2 /* CBLTableViewExampleViewController.m in Sources */,
+				9CB69C8219E23E2200F109AB /* CBLAutoUpdateCommand.m in Sources */,
 				9CEB2F181912D95D008731D2 /* main.m in Sources */,
 				9CEB2F0E1912D900008731D2 /* SDAppDelegate.m in Sources */,
 			);
@@ -242,7 +270,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -274,7 +302,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -288,6 +316,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SDTableViewCommand/SDTableViewCommand-Prefix.pch";
 				INFOPLIST_FILE = "SDTableViewCommand/SDTableViewCommand-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = SDTableViewCommand;
 				WRAPPER_EXTENSION = app;
 			};
@@ -301,6 +330,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SDTableViewCommand/SDTableViewCommand-Prefix.pch";
 				INFOPLIST_FILE = "SDTableViewCommand/SDTableViewCommand-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = SDTableViewCommand;
 				WRAPPER_EXTENSION = app;
 			};
